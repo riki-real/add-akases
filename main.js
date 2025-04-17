@@ -83,12 +83,17 @@ setInterval(updateClock, 1000);
 updateClock();
 
 async function ambilData() {
-  const res = await fetch("/api/submit"); // Ganti dari /api/submit
-  const data = await res.json();
-  fileSha = data.sha;
-  jsonData = data.content;
-}
-
+  try {
+    const res = await fetch("/api/submit");
+    if (!res.ok) throw new Error("Gagal ambil data");
+    const data = await res.json();
+    fileSha = data.sha;
+    jsonData = data.content;
+  } catch (e) {
+    console.error(e);
+    alert("Gagal ambil data dari server.");
+  }
+  }
 async function simpanData(message) {
   const updatedContent = JSON.stringify(jsonData, null, 2);
   const res = await fetch("/api/submit", {
